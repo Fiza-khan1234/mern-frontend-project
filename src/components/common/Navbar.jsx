@@ -20,6 +20,7 @@ export const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Dark/Light Theme state
   const [theme, setTheme] = useState(() => {
@@ -30,6 +31,10 @@ export const Navbar = () => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('supportflow_theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
@@ -55,15 +60,27 @@ export const Navbar = () => {
           )}
         </Link>
 
+        <button
+          type="button"
+          className="mobile-nav-toggle"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-label="Toggle navigation"
+          aria-expanded={menuOpen}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
         {isAuthenticated && user && (
-          <nav className="nav-links">
+          <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
             {/* Customer Links */}
             {user.role === 'customer' && (
               <>
-                <Link to="/dashboard" className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`}>
+                <Link to="/dashboard" onClick={() => setMenuOpen(false)} className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`}>
                   <LayoutDashboard size={16} /> Dashboard
                 </Link>
-                <Link to="/requests/new" className={`nav-link ${isActive('/requests/new') ? 'active' : ''}`}>
+                <Link to="/requests/new" onClick={() => setMenuOpen(false)} className={`nav-link ${isActive('/requests/new') ? 'active' : ''}`}>
                   <PlusCircle size={16} /> New Request
                 </Link>
               </>
@@ -72,10 +89,10 @@ export const Navbar = () => {
             {/* Worker Links */}
             {user.role === 'worker' && (
               <>
-                <Link to="/worker/dashboard" className={`nav-link ${isActive('/worker/dashboard') ? 'active' : ''}`}>
+                <Link to="/worker/dashboard" onClick={() => setMenuOpen(false)} className={`nav-link ${isActive('/worker/dashboard') ? 'active' : ''}`}>
                   <LayoutDashboard size={16} /> Worker Hub
                 </Link>
-                <Link to={`/worker/profile/${user._id}`} className={`nav-link ${isActive(`/worker/profile/${user._id}`) ? 'active' : ''}`}>
+                <Link to={`/worker/profile/${user._id}`} onClick={() => setMenuOpen(false)} className={`nav-link ${isActive(`/worker/profile/${user._id}`) ? 'active' : ''}`}>
                   <UserIcon size={16} /> My Ratings
                 </Link>
               </>
@@ -84,16 +101,16 @@ export const Navbar = () => {
             {/* Admin Links */}
             {user.role === 'admin' && (
               <>
-                <Link to="/admin/dashboard" className={`nav-link ${isActive('/admin/dashboard') ? 'active' : ''}`}>
+                <Link to="/admin/dashboard" onClick={() => setMenuOpen(false)} className={`nav-link ${isActive('/admin/dashboard') ? 'active' : ''}`}>
                   <LayoutDashboard size={16} /> Overview
                 </Link>
-                <Link to="/admin/worker-requests" className={`nav-link ${isActive('/admin/worker-requests') ? 'active' : ''}`}>
+                <Link to="/admin/worker-requests" onClick={() => setMenuOpen(false)} className={`nav-link ${isActive('/admin/worker-requests') ? 'active' : ''}`}>
                   <UserCheck size={16} /> Worker Requests
                 </Link>
-                <Link to="/admin/tickets" className={`nav-link ${isActive('/admin/tickets') ? 'active' : ''}`}>
+                <Link to="/admin/tickets" onClick={() => setMenuOpen(false)} className={`nav-link ${isActive('/admin/tickets') ? 'active' : ''}`}>
                   <Layers size={16} /> All Tickets
                 </Link>
-                <Link to="/admin/users" className={`nav-link ${isActive('/admin/users') ? 'active' : ''}`}>
+                <Link to="/admin/users" onClick={() => setMenuOpen(false)} className={`nav-link ${isActive('/admin/users') ? 'active' : ''}`}>
                   <Users size={16} /> Users
                 </Link>
               </>
